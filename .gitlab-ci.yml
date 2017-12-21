@@ -9,6 +9,15 @@ Syntax Check:
   script:
     - gofmt -e *.go
 
+Test Message to Slackbot:
+  stage: test
+  script:
+    - >
+      go run slackr.go
+      -message "Test"
+      -webhook ${WEBHOOK_URL}
+      -verbose
+
 Golang Compile - Native:
   stage: build
   script:
