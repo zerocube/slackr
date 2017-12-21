@@ -4,10 +4,61 @@ Syntax Check:
   script:
     - gofmt -e *.go
 
-Golang Compile:
+Golang Compile - Compile:
   script:
     - go build -o slackr
   artifacts:
     paths:
       - slackr
     expire_in: 1 year
+
+# Cross platform compiles - Valid GOOS and GOOARCH values are located at:
+# https://github.com/golang/go/blob/master/src/go/build/syslist.go
+Golang Compile - linux_amd64:
+  variables:
+    GOOS: linux
+    GOARCH: amd64
+  script:
+    - go build -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
+  only:
+    - master
+Golang Compile - linux_mips64:
+  variables:
+    GOOS: linux
+    GOARCH: mips64
+  script:
+    - go build -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
+  only:
+    - master
+Golang Compile - darwin_amd64:
+  variables:
+    GOOS: darwin
+    GOARCH: amd64
+  script:
+    - go build -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
+  only:
+    - master
+Golang Compile - android_amd64:
+  variables:
+    GOOS: android
+    GOARCH: amd64
+  script:
+    - go build -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
+  only:
+    - master
