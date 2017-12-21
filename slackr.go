@@ -14,31 +14,45 @@ import (
   "fmt"
 )
 
-type payload struct {
-  target, name, message string
+type app_options struct {
+  target,
+  name,
+  message,
+  api_token string
+  verbose bool
 }
 
-func (p *payload) Load() payload {
-  flag.StringVar( &p.target,
+func (opt *app_options) Load() app_options {
+  flag.StringVar( &opt.target,
                   "target",
                   "#general",
                   "The target to send messages to.")
-  flag.StringVar( &p.name,
+  flag.StringVar( &opt.name,
                   "name",
                   "Slackr",
                   "The username to send messages as.")
-  flag.StringVar( &p.message,
+  flag.StringVar( &opt.message,
                   "message",
                   "",
                   "The message to send.")
-  return *p
+  flag.StringVar( &opt.api_token,
+                  "token",
+                  "",
+                  "The Slack API token.")
+  flag.BoolVar( &opt.verbose,
+                "verbose",
+                false,
+                "Enables verbose output.")
+  return *opt
 }
 
 func main() {
-  msg_payload := payload{}
-  msg_payload.Load()
-  fmt.Println("Payload:")
-  fmt.Println("  - target:  ", msg_payload.target)
-  fmt.Println("  - name:    ", msg_payload.name)
-  fmt.Println("  - message: ", msg_payload.message)
+  options := app_options{}
+  options.Load()
+  if options.verbose == true {
+    fmt.Println("Payload:")
+    fmt.Println("  - target:  ", options.target)
+    fmt.Println("  - name:    ", options.name)
+    fmt.Println("  - message: ", options.message) 
+  }
 }
