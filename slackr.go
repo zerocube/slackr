@@ -18,7 +18,7 @@ type app_options struct {
   target,
   name,
   message,
-  api_token string
+  webhook_url string
   verbose bool
 }
 
@@ -35,8 +35,8 @@ func (opt *app_options) Load() app_options {
                   "message",
                   "",
                   "The message to send.")
-  flag.StringVar( &opt.api_token,
-                  "token",
+  flag.StringVar( &opt.webhook_url,
+                  "webhook",
                   "",
                   "The Slack API token.")
   flag.BoolVar( &opt.verbose,
