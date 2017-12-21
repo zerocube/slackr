@@ -1,0 +1,13 @@
+image: golang:1.9
+
+Syntax Check:
+  script:
+    - gofmt -e *.go
+
+Golang Compile:
+  script:
+    - go build -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
