@@ -1,9 +1,11 @@
 /* ==========================================================================
 
 User Parameters™:
-  -t <target>   The Slack channel or username to send a message to.
-  -n <name>     The Slack name to send messages as.
-  -m <message>  The message to send
+  -target <target>    The Slack channel or username to send a message to.
+  -name <name>        The Slack name to send messages as.
+  -message <message>  The message to send.
+  -webhook_url <url>  The Slack webhook URL.
+  -verbose            Enables verbose output
 
 ============================================================================= */
 
