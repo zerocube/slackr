@@ -56,6 +56,7 @@ func (opt *App_Options) Load() App_Options {
                 "verbose",
                 false,
                 "Enables verbose output.")
+  flag.Parse()
   return *opt
 }
 
