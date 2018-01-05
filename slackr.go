@@ -10,19 +10,32 @@ User Parameters™:
 package main
 
 import (
+  "bytes"
+  "encoding/json"
   "flag"
   "fmt"
+  "io/ioutil"
+  "log"
+  "net/http"
+  "os"
 )
 
-type app_options struct {
+type App_Options struct {
   target,
   name,
   message,
   webhook_url string
   verbose bool
 }
+type Msg_Payload struct {
+  Text,
+  Channel,
+  Username,
+  Icon_Emoji string
+  Link_Names int
+}
 
-func (opt *app_options) Load() app_options {
+func (opt *App_Options) Load() App_Options {
   flag.StringVar( &opt.target,
                   "target",
                   "#general",
@@ -38,7 +51,7 @@ func (opt *app_options) Load() app_options {
   flag.StringVar( &opt.webhook_url,
                   "webhook",
                   "",
-                  "The Slack API token.")
+                  "The Slack webhook.")
   flag.BoolVar( &opt.verbose,
                 "verbose",
                 false,
@@ -47,7 +60,7 @@ func (opt *app_options) Load() app_options {
 }
 
 func main() {
-  options := app_options{}
+  options := App_Options{}
   options.Load()
   if options.verbose == true {
     fmt.Println("Payload:")
@@ -55,4 +68,39 @@ func main() {
     fmt.Println("  - name:    ", options.name)
     fmt.Println("  - message: ", options.message) 
   }
+
+  //  Generate the message payload
+  hook_payload := &Msg_Payload{
+    Text: options.message,
+    Channel: options.target,
+    Username: options.name,
+  }
+  json_payload, err := json.Marshal(hook_payload)
+  if err != nil {
+    fmt.Println("An error occurred while trying to create the JSON payload.")
+    log.Fatal(err)
+    os.Exit(1)
+  }
+
+  // Make the web request
+  res, err := http.Post(
+    options.webhook_url,
+    "application/json",
+    bytes.NewBuffer(json_payload) )
+
+  if err != nil {
+    log.Fatal(err)
+    os.Exit(2)
+  }
+  robots, err := ioutil.ReadAll(res.Body)
+  res.Body.Close()
+  if err != nil {
+    fmt.Println("An error occurred while trying to make a POST request to the",
+                "webhook URL.")
+    if options.verbose == true {
+      log.Fatal(err)
+    }
+    os.Exit(10)
+  }
+  fmt.Printf("%s", robots)
 }
