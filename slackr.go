@@ -82,18 +82,21 @@ func main() {
     os.Exit(1)
   }
 
-  // Make the web request
-  res, err := http.Post(
+  //  Create the web request
+  req, err := http.NewRequest(
+    "POST",
     options.webhook_url,
-    "application/json",
     bytes.NewBuffer(json_payload) )
+  req.Header.Set("Content-Type", "application/json")
 
+  client := &http.Client{}
+  resp, err := client.Do(req)
   if err != nil {
     log.Fatal(err)
     os.Exit(2)
   }
-  robots, err := ioutil.ReadAll(res.Body)
-  res.Body.Close()
+  response_body, err := ioutil.ReadAll(res.Body)
+  resp.Body.Close()
   if err != nil {
     fmt.Println("An error occurred while trying to make a POST request to the",
                 "webhook URL.")
@@ -102,5 +105,5 @@ func main() {
     }
     os.Exit(10)
   }
-  fmt.Printf("%s", robots)
+  fmt.Printf("%s", response_body)
 }
