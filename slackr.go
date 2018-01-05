@@ -95,7 +95,7 @@ func main() {
     log.Fatal(err)
     os.Exit(2)
   }
-  response_body, err := ioutil.ReadAll(res.Body)
+  response_body, err := ioutil.ReadAll(resp.Body)
   resp.Body.Close()
   if err != nil {
     fmt.Println("An error occurred while trying to make a POST request to the",
