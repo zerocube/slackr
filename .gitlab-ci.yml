@@ -15,7 +15,6 @@ Test Message to Slackbot:
     - >
       go run slackr.go
       -message "Test"
-      -webhook ${WEBHOOK_URL}
       -verbose
 
 Golang Compile - Native:

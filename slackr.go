@@ -59,6 +59,10 @@ func (opt *App_Options) Load() App_Options {
   flag.Parse()
   return *opt
 }
+func (opt *App_Options) OverrideWebhook(url string) App_Options {
+  opt.webhook_url = url
+  return *opt
+}
 
 func main() {
   options := App_Options{}
@@ -68,6 +72,21 @@ func main() {
     fmt.Println("  - target:  ", options.target)
     fmt.Println("  - name:    ", options.name)
     fmt.Println("  - message: ", options.message) 
+  }
+
+  //  Check the environment for a WEBHOOK_URL if there wasn't one specified.
+  //  The one provided the command line takes precedence, so we only load from
+  //  the environment if we need it.
+  if options.webhook_url == "" {
+    env_webhook_url := os.Getenv("WEBHOOK_URL")
+    if env_webhook_url != "" {
+      options.OverrideWebhook(env_webhook_url)
+    } else {
+      fmt.Println(
+        "Unable to determine webhook URL from command line parameter, or from ",
+        "environment variable.",
+      )
+    }
   }
 
   //  Generate the message payload
