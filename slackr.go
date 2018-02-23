@@ -72,7 +72,7 @@ func main() {
   //  The one provided the command line takes precedence, so we only load from
   //  the environment if we need it.
   if options.Webhook == "" {
-    env_webhook := os.Getenv("WEBHOOK_URL")
+    env_webhook := os.Getenv("SLACKR_WEBHOOK_URL")
     if env_webhook != "" {
       options.OverrideWebhook(env_webhook)
     } else {
