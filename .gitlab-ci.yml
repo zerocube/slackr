@@ -24,7 +24,7 @@ Test Call to Version Command:
     - go run slackr.go -version
     - >
       go run
-      -ldflags="-X main.git_version ${CI_COMMIT_SHA}"
+      -ldflags="-X main.git_version=${CI_COMMIT_SHA}"
       slackr.go
       -version
 
