@@ -1,8 +1,11 @@
-image: golang:1.9
+image: golang:1.10
 
 stages:
   - test
   - build
+
+before_script:
+  - LDFLAGS="-X main.git_version=${CI_COMMIT_SHA}"
 
 Syntax Check:
   stage: test
@@ -18,10 +21,23 @@ Test Message to Slackbot:
       -message "Test"
       -verbose
 
+Test Call to Version Command:
+  stage: test
+  script:
+    - go run slackr.go -version
+    - >
+      go run
+      -ldflags="${LDFLAGS}"
+      slackr.go
+      -version
+
 Golang Compile - Native:
   stage: build
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -35,7 +51,10 @@ Golang Compile - linux_amd64:
     GOOS: linux
     GOARCH: amd64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -48,7 +67,10 @@ Golang Compile - linux_mips64:
     GOOS: linux
     GOARCH: mips64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -61,20 +83,10 @@ Golang Compile - darwin_amd64:
     GOOS: darwin
     GOARCH: amd64
   script:
-    - go build -o slackr
-  artifacts:
-    paths:
-      - slackr
-    expire_in: 1 year
-  only:
-    - master
-Golang Compile - android_amd64:
-  stage: build
-  variables:
-    GOOS: android
-    GOARCH: amd64
-  script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
