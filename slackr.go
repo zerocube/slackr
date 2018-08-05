@@ -82,7 +82,7 @@ func main() {
     } else {
       slackr_version := git_version
     }
-    fmt.Fprintln("Slackr Version: %s", slackr_version)
+    fmt.Fprintln(os.Stdout, "Slackr Version: %s", slackr_version)
     os.Exit(0)
   }
 
