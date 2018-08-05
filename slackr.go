@@ -78,7 +78,7 @@ func main() {
 	//  If all we need is to output the version, then do that.
 	if options.Version == true {
 		//  Guilty until proven innocent
-		slackr_version := ""
+		slackr_version := "unknown"
 
 		if git_version != "" {
 			slackr_version = git_version
