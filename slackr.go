@@ -22,6 +22,7 @@ import (
 	"os"
 )
 
+var build_webhook_url string
 var git_version string
 
 type App_Options struct {
@@ -64,6 +65,19 @@ func (opt *App_Options) Load() App_Options {
 		false,
 		"Outputs the version, if known.")
 	flag.Parse()
+
+  //  Priority 1: Webhook URL provided via command line (see above)
+  if opt.Webhook == "" {
+    //  Priority 2: Webhook URL provided via environment variable
+    //  Priority 3: Webhook URL provided via LDFLAGS
+    env_webhook_url := os.Getenv("SLACKR_WEBHOOK_URL")
+    if env_webhook_url != "" {
+      opt.Webhook = env_webhook_url
+    } else if build_webhook_url != "" {
+      opt.Webhook = build_webhook_url
+    }
+  }
+
 	return *opt
 }
 func (opt *App_Options) OverrideWebhook(url string) App_Options {
@@ -90,21 +104,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	//  Check the environment for a WEBHOOK_URL if there wasn't one specified.
-	//  The one provided the command line takes precedence, so we only load from
-	//  the environment if we need it.
-	if options.Webhook == "" {
-		env_webhook := os.Getenv("SLACKR_WEBHOOK_URL")
-		if env_webhook != "" {
-			options.OverrideWebhook(env_webhook)
-		} else {
-			fmt.Println(
-				"Unable to determine webhook URL from command line parameter, or from",
-				"environment variable.",
-			)
-			os.Exit(1)
-		}
-	}
+  //  Double check that we still have a webhook URL to use
+  if options.Webhook == {
+    fmt.Println(
+      "Unable to determine webhook URL from command line parameter, or from",
+      "environment variable.",
+    )
+    os.Exit(1)
+  }
 
 	if options.Verbose == true {
 		fmt.Println("Payload:")
