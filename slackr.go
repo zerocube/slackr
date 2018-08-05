@@ -105,7 +105,7 @@ func main() {
 	}
 
   //  Double check that we still have a webhook URL to use
-  if options.Webhook == {
+  if options.Webhook == "" {
     fmt.Println(
       "Unable to determine webhook URL from command line parameter, or from",
       "environment variable.",
