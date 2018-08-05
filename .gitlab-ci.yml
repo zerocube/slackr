@@ -5,7 +5,7 @@ stages:
   - build
 
 variables:
-  LDFLAGS: >
+  LDFLAGS: >-
     -X
     main.git_version=${CI_COMMIT_SHA}
     main.build_webhook_url=${BUILD_WEBHOOK_URL}
