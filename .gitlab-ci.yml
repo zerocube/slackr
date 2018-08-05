@@ -17,6 +17,8 @@ before_script:
       >&2 echo "BUILD_WEBHOOK_URL not available"
       exit 1
     }
+  - >
+    echo "LDFLAGS: ${LDFLAGS}"
 
 Syntax Check:
   stage: test
