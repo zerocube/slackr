@@ -93,19 +93,3 @@ Golang Compile - darwin_amd64:
     expire_in: 1 year
   only:
     - master
-Golang Compile - android_amd64:
-  stage: build
-  variables:
-    GOOS: android
-    GOARCH: amd64
-  script:
-    - >
-      go build
-      -ldflags="${LDFLAGS}"
-      -o slackr
-  artifacts:
-    paths:
-      - slackr
-    expire_in: 1 year
-  only:
-    - master
