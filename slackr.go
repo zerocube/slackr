@@ -60,7 +60,7 @@ func (opt *App_Options) Load() App_Options {
                 false,
                 "Enables verbose output.")
   flag.BoolVar( &opt.Version,
-                "version"
+                "version",
                 false,
                 "Outputs the version, if known.")
   flag.Parse()
@@ -83,7 +83,7 @@ func main() {
       slackr_version := git_version
     }
     fmt.Fprintln("Slackr Version: %s", slackr_version)
-    os.exit(0)
+    os.Exit(0)
   }
 
   //  Check the environment for a WEBHOOK_URL if there wasn't one specified.
