@@ -8,6 +8,14 @@ variables:
   LDFLAGS: -X main.git_version='${CI_COMMIT_SHA}'
   LDFLAGS_WEBHOOK: ${LDFLAGS} main.build_webhook_url="${BUILD_WEBHOOK_URL}"
 
+# Overwrite LDFLAGS_WEBHOOK back to LDFLAGS if there is no BUILD_WEBHOOK_URL.
+before_script:
+  - >
+    [ -z "${BUILD_WEBHOOK_URL}" ] && {
+      >&2 echo "BUILD_WEBHOOK_URL empty, reverting to default LDFLAGS."
+      LDFLAGS_WEBHOOK="${LDFLAGS}"
+    }
+
 Syntax Check:
   stage: test
   script:
