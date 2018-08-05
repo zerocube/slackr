@@ -22,6 +22,8 @@ import (
   "os"
 )
 
+var git_version string
+
 type App_Options struct {
   Target    string `json:"channel"`
   Name      string `json:"username"`
@@ -29,6 +31,7 @@ type App_Options struct {
   Webhook   string
   Emoji     string `json:"icon_emoji"`
   Verbose   bool
+  Version   bool
 }
 
 func (opt *App_Options) Load() App_Options {
@@ -56,6 +59,10 @@ func (opt *App_Options) Load() App_Options {
                 "verbose",
                 false,
                 "Enables verbose output.")
+  flag.BoolVar( &opt.Version,
+                "version"
+                false,
+                "Outputs the version, if known.")
   flag.Parse()
   return *opt
 }
@@ -67,6 +74,17 @@ func (opt *App_Options) OverrideWebhook(url string) App_Options {
 func main() {
   options := App_Options{}
   options.Load()
+
+  //  If all we need is to output the version, then do that.
+  if options.Version == true {
+    if git_version == "" {
+      slackr_version := "unknown"
+    } else {
+      slackr_version := git_version
+    }
+    fmt.Fprintln("Slackr Version: %s", slackr_version)
+    os.exit(0)
+  }
 
   //  Check the environment for a WEBHOOK_URL if there wasn't one specified.
   //  The one provided the command line takes precedence, so we only load from
