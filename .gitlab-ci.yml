@@ -5,20 +5,15 @@ stages:
   - build
 
 variables:
-  LDFLAGS: >-
-    -X
-    main.git_version=${CI_COMMIT_SHA}
-    main.build_webhook_url=${BUILD_WEBHOOK_URL}
+  LDFLAGS: -X main.git_version=${CI_COMMIT_SHA}
 
 before_script:
   - >
-    [ -z "${BUILD_WEBHOOK_URL}" ]
+    [ ! -z "${BUILD_WEBHOOK_URL}" ]
     && {
-      >&2 echo "BUILD_WEBHOOK_URL not available"
-      exit 1
+      LDFLAGS="${LDFLAGS} main.build_webhook_url=${BUILD_WEBHOOK_URL}"
+      echo "Injected into LDFLAGS: BUILD_WEBHOOK_URL"
     }
-  - >
-    echo "LDFLAGS: ${LDFLAGS}"
 
 Syntax Check:
   stage: test
@@ -27,8 +22,6 @@ Syntax Check:
 
 Test Message to Slackbot:
   stage: test
-  variables:
-    LDFLAGS: "-X main.git_version=${CI_COMMIT_SHA}"
   script:
     - >
       go run slackr.go
@@ -38,8 +31,6 @@ Test Message to Slackbot:
 
 Test Call to Version Command:
   stage: test
-  variables:
-    LDFLAGS: "-X main.git_version=${CI_COMMIT_SHA}"
   script:
     - go run slackr.go -version
     - >
