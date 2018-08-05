@@ -4,6 +4,9 @@ stages:
   - test
   - build
 
+before_script:
+  - LDFLAGS="-X main.git_version=${CI_COMMIT_SHA}"
+
 Syntax Check:
   stage: test
   script:
@@ -24,14 +27,17 @@ Test Call to Version Command:
     - go run slackr.go -version
     - >
       go run
-      -ldflags="-X main.git_version=${CI_COMMIT_SHA}"
+      -ldflags="${LDFLAGS}"
       slackr.go
       -version
 
 Golang Compile - Native:
   stage: build
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -45,7 +51,10 @@ Golang Compile - linux_amd64:
     GOOS: linux
     GOARCH: amd64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -58,7 +67,10 @@ Golang Compile - linux_mips64:
     GOOS: linux
     GOARCH: mips64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -71,7 +83,10 @@ Golang Compile - darwin_amd64:
     GOOS: darwin
     GOARCH: amd64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
@@ -84,7 +99,10 @@ Golang Compile - android_amd64:
     GOOS: android
     GOARCH: amd64
   script:
-    - go build -o slackr
+    - >
+      go build
+      -ldflags="${LDFLAGS}"
+      -o slackr
   artifacts:
     paths:
       - slackr
