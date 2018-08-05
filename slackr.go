@@ -66,17 +66,17 @@ func (opt *App_Options) Load() App_Options {
 		"Outputs the version, if known.")
 	flag.Parse()
 
-  //  Priority 1: Webhook URL provided via command line (see above)
-  if opt.Webhook == "" {
-    //  Priority 2: Webhook URL provided via environment variable
-    //  Priority 3: Webhook URL provided via LDFLAGS
-    env_webhook_url := os.Getenv("SLACKR_WEBHOOK_URL")
-    if env_webhook_url != "" {
-      opt.Webhook = env_webhook_url
-    } else if build_webhook_url != "" {
-      opt.Webhook = build_webhook_url
-    }
-  }
+	//  Priority 1: Webhook URL provided via command line (see above)
+	if opt.Webhook == "" {
+		//  Priority 2: Webhook URL provided via environment variable
+		//  Priority 3: Webhook URL provided via LDFLAGS
+		env_webhook_url := os.Getenv("SLACKR_WEBHOOK_URL")
+		if env_webhook_url != "" {
+			opt.Webhook = env_webhook_url
+		} else if build_webhook_url != "" {
+			opt.Webhook = build_webhook_url
+		}
+	}
 
 	return *opt
 }
@@ -104,14 +104,14 @@ func main() {
 		os.Exit(0)
 	}
 
-  //  Double check that we still have a webhook URL to use
-  if options.Webhook == "" {
-    fmt.Println(
-      "Unable to determine webhook URL from command line parameter, or from",
-      "environment variable.",
-    )
-    os.Exit(1)
-  }
+	//  Double check that we still have a webhook URL to use
+	if options.Webhook == "" {
+		fmt.Println(
+			"Unable to determine webhook URL from command line parameter, or from",
+			"environment variable.",
+		)
+		os.Exit(1)
+	}
 
 	if options.Verbose == true {
 		fmt.Println("Payload:")
