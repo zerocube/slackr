@@ -6,14 +6,7 @@ stages:
 
 variables:
   LDFLAGS: -X main.git_version='${CI_COMMIT_SHA}'
-
-before_script:
-  - >
-    [ ! -z "${BUILD_WEBHOOK_URL}" ]
-    && {
-      LDFLAGS="${LDFLAGS} main.build_webhook_url='${BUILD_WEBHOOK_URL}'"
-      echo "Injected into LDFLAGS: BUILD_WEBHOOK_URL"
-    }
+  LDFLAGS_WEBHOOK: ${LDFLAGS} main.build_webhook_url="${BUILD_WEBHOOK_URL}"
 
 Syntax Check:
   stage: test
@@ -44,7 +37,7 @@ Golang Compile - Native:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -61,7 +54,7 @@ Golang Compile - linux_amd64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -77,7 +70,7 @@ Golang Compile - linux_mips64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -93,7 +86,7 @@ Golang Compile - darwin_amd64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
