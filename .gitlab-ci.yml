@@ -5,13 +5,13 @@ stages:
   - build
 
 variables:
-  LDFLAGS: -X main.git_version="${CI_COMMIT_SHA}"
+  LDFLAGS: -X main.git_version='${CI_COMMIT_SHA}'
 
 before_script:
   - >
     [ ! -z "${BUILD_WEBHOOK_URL}" ]
     && {
-      LDFLAGS="${LDFLAGS} main.build_webhook_url=\"${BUILD_WEBHOOK_URL}\""
+      LDFLAGS="${LDFLAGS} main.build_webhook_url='${BUILD_WEBHOOK_URL}'"
       echo "Injected into LDFLAGS: BUILD_WEBHOOK_URL"
     }
 
