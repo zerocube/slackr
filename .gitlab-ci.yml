@@ -5,8 +5,8 @@ stages:
   - build
 
 variables:
-  LDFLAGS_GITVERSION: -X main.git_version="${CI_COMMIT_SHA}"
-  LDFLAGS_WEBHOOK: -X main.build_webhook_url="${BUILD_WEBHOOK_URL}"
+  LDFLAGS_GITVERSION: -X main.git_version=${CI_COMMIT_SHA}
+  LDFLAGS_WEBHOOK: -X main.build_webhook_url=${BUILD_WEBHOOK_URL}
 
 # Overwrite LDFLAGS_WEBHOOK back to LDFLAGS if there is no BUILD_WEBHOOK_URL.
 before_script:
