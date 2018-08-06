@@ -4,8 +4,17 @@ stages:
   - test
   - build
 
+variables:
+  LDFLAGS_GITVERSION: -X main.git_version='${CI_COMMIT_SHA}'
+  LDFLAGS_WEBHOOK: -X main.build_webhook_url="${BUILD_WEBHOOK_URL}"
+
+# Overwrite LDFLAGS_WEBHOOK back to LDFLAGS if there is no BUILD_WEBHOOK_URL.
 before_script:
-  - LDFLAGS="-X main.git_version=${CI_COMMIT_SHA}"
+  - >
+    [ -z "${BUILD_WEBHOOK_URL}" ] && {
+      >&2 echo "BUILD_WEBHOOK_URL empty, clearing LDFLAGS_WEBHOOK."
+      unset LDFLAGS_WEBHOOK
+    }
 
 Syntax Check:
   stage: test
@@ -27,7 +36,7 @@ Test Call to Version Command:
     - go run slackr.go -version
     - >
       go run
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_GITVERSION}"
       slackr.go
       -version
 
@@ -36,7 +45,7 @@ Golang Compile - Native:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_GITVERSION} ${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -53,7 +62,7 @@ Golang Compile - linux_amd64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_GITVERSION} ${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -69,7 +78,7 @@ Golang Compile - linux_mips64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_GITVERSION} ${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
@@ -85,7 +94,7 @@ Golang Compile - darwin_amd64:
   script:
     - >
       go build
-      -ldflags="${LDFLAGS}"
+      -ldflags="${LDFLAGS_GITVERSION} ${LDFLAGS_WEBHOOK}"
       -o slackr
   artifacts:
     paths:
