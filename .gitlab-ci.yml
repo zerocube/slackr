@@ -1,4 +1,4 @@
-image: golang:1.10
+image: golang:1.11-alpine
 
 stages:
   - test
@@ -75,6 +75,22 @@ Golang Compile - linux_mips64:
   variables:
     GOOS: linux
     GOARCH: mips64
+  script:
+    - >
+      go build
+      -ldflags="${LDFLAGS_GITVERSION} ${LDFLAGS_WEBHOOK}"
+      -o slackr
+  artifacts:
+    paths:
+      - slackr
+    expire_in: 1 year
+  only:
+    - master
+Golang Compile - linux_armv7l:
+  stage: build
+  variables:
+    GOOS: linux
+    GOARCH: armv7l
   script:
     - >
       go build
