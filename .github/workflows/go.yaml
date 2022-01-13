@@ -1,0 +1,76 @@
+name: Go
+
+on:
+  push: { branches-ignore: [main] }
+
+jobs:
+
+  native_builds:
+    name: Native platform build
+    runs-on: ${{ matrix.os_label }}
+    strategy:
+      matrix:
+        os_label:
+        - windows-latest
+        - ubuntu-latest
+        - macos-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
+
+    - name: Run Tests
+      run: go test -v ./...
+
+    - name: Go Build
+      run: >-
+        go build -v
+        -ldflags "-X 'main.version=${GITHUB_SHA:0:8}'"
+        -o build/slackr_${{ matrix.os_label }}
+
+    - name: Upload build artefacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: slackr_${{ matrix.os_label }}
+        path: build/slackr_${{ matrix.os_label }}
+
+  platform_builds:
+    name: Cross-platform build
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        go_os: [linux,darwin,windows]
+        go_arch: [amd64]
+        include:
+        - {go_os: linux, go_arch: mips64}
+        - {go_os: linux, go_arch: arm64}
+        - {go_os: darwin, go_arch: arm64}
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
+
+    - name: Run Tests
+      run: go test -v ./...
+
+    - name: Go Build
+      run: >-
+        go build -v
+        -ldflags "-X 'main.version=${GITHUB_SHA:0:8}'"
+        -o build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+
+    - name: Upload build artefacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+        path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
