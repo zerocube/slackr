@@ -22,7 +22,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.15
+        go-version: ^1.18
 
     - name: Run Tests
       run: go test -v ./...
@@ -34,14 +34,14 @@ jobs:
         -o build/slackr_${{ matrix.os_label }}
 
     - name: Upload build artefacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: slackr_${{ matrix.os_label }}
         path: build/slackr_${{ matrix.os_label }}
 
   platform_builds:
     name: Cross-platform build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         go_os: [linux,darwin,windows]
@@ -58,7 +58,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.15
+        go-version: ^1.18
 
     - name: Run Tests
       run: go test -v ./...
