@@ -35,7 +35,7 @@ jobs:
         -o build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
 
     - name: Upload build artefacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
         path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
