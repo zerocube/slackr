@@ -1,7 +1,8 @@
-name: Go
+name: Release
 
 on:
-  push: { branches-ignore: [main] }
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
 
 jobs:
   build:
@@ -39,3 +40,18 @@ jobs:
       with:
         name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
         path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/download-artifact@v3
+      with:
+        path: ./build/
+
+    - name: Create Github Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "build/*"
+        token: ${{ secrets.GITHUB_TOKEN }}
