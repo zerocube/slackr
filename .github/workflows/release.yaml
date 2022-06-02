@@ -54,5 +54,5 @@ jobs:
     - name: Create Github Release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "build/*"
+        artifacts: "build/**"
         token: ${{ secrets.GITHUB_TOKEN }}
