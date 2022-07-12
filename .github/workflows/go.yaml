@@ -15,7 +15,9 @@ jobs:
         - {go_os: linux, go_arch: mips64}
         - {go_os: linux, go_arch: arm64}
         - {go_os: darwin, go_arch: arm64}
-
+    env:
+      GOOS: "${{ matrix.go_os }}"
+      GOARCH: "${{ matrix.go_arch }}"
     steps:
 
     - uses: actions/checkout@v2
