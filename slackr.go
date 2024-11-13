@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -70,9 +70,9 @@ func (opt *App_Options) Load() App_Options {
 	if opt.Webhook == "" {
 		// Priority 2: Webhook URL provided via environment variable
 		// Priority 3: Webhook URL provided via LDFLAGS
-		env_webhook_url := os.Getenv("SLACKR_WEBHOOK_URL")
-		if env_webhook_url != "" {
-			opt.Webhook = env_webhook_url
+		webhookURLFromEnv := os.Getenv("SLACKR_WEBHOOK_URL")
+		if webhookURLFromEnv != "" {
+			opt.Webhook = webhookURLFromEnv
 		} else if build_webhook_url != "" {
 			opt.Webhook = build_webhook_url
 		}
@@ -90,7 +90,7 @@ func main() {
 	options.Load()
 
 	// If all we need is to output the version, then do that.
-	if options.Version == true {
+	if options.Version {
 		// Guilty until proven innocent
 		slackr_version := "unknown"
 
@@ -98,22 +98,19 @@ func main() {
 			slackr_version = git_version
 		}
 
-		fmt.Println(
-			fmt.Sprintf("Slackr Version: %s", slackr_version),
-		)
+		fmt.Printf("Slackr Version: %s\n", slackr_version)
 		os.Exit(0)
 	}
 
 	// Double check that we still have a webhook URL to use
 	if options.Webhook == "" {
-		fmt.Println(
+		log.Fatalln(
 			"Unable to determine webhook URL from command line parameter, or from",
 			"environment variable.",
 		)
-		os.Exit(1)
 	}
 
-	if options.Verbose == true {
+	if options.Verbose {
 		fmt.Println("Payload:")
 		fmt.Println("	- target:			", options.Target)
 		fmt.Println("	- name:				", options.Name)
@@ -125,38 +122,33 @@ func main() {
 	}
 
 	json_payload, err := json.Marshal(options)
-	if options.Verbose == true {
+	if options.Verbose {
 		fmt.Println("JSON payload map:", json_payload)
 	}
 	if err != nil {
-		fmt.Println("An error occurred while trying to create the JSON payload.")
-		log.Fatal(err)
-		os.Exit(2)
+		log.Fatalf("An error occurred while trying to create the JSON payload: %s\n", err)
 	}
 	post_payload := bytes.NewBuffer(json_payload)
-	if options.Verbose == true {
+	if options.Verbose {
 		fmt.Println("POST payload map:", post_payload)
 	}
 
 	// Create the web request
 	req, err := http.NewRequest("POST", options.Webhook, post_payload)
+	if err != nil {
+		log.Fatalf("An error occurred while trying to create the POST request: %s\n", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
-		os.Exit(3)
+		log.Fatalf("An error occurred while trying to execute the POST request: %s\n", err)
 	}
-	response_body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
-		fmt.Println("An error occurred while trying to make a POST request to the",
-			"webhook URL.")
-		if options.Verbose == true {
-			log.Fatal(err)
-		}
-		os.Exit(4)
+		log.Fatalf("An error occurred while trying to read the response body: %s\n", err)
 	}
-	fmt.Printf("%s\n", response_body)
+	fmt.Printf("%s\n", respBody)
 }
