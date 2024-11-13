@@ -9,35 +9,34 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go_os: [linux,darwin,windows]
+        go_os: [linux, darwin, windows]
         go_arch: [amd64]
         include:
-        - {go_os: linux, go_arch: mips64}
-        - {go_os: linux, go_arch: arm64}
-        - {go_os: darwin, go_arch: arm64}
+          - { go_os: linux, go_arch: mips64 }
+          - { go_os: linux, go_arch: arm64 }
+          - { go_os: darwin, go_arch: arm64 }
     env:
       GOOS: "${{ matrix.go_os }}"
       GOARCH: "${{ matrix.go_arch }}"
     steps:
+      - uses: actions/checkout@v4
 
-    - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.18
+      - name: Run Tests
+        run: go test -v ./...
 
-    - name: Run Tests
-      run: go test -v ./...
+      - name: Go Build
+        run: >-
+          go build -v
+          -ldflags "-X 'main.version=${GITHUB_SHA:0:8}'"
+          -o build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
 
-    - name: Go Build
-      run: >-
-        go build -v
-        -ldflags "-X 'main.version=${GITHUB_SHA:0:8}'"
-        -o build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
-
-    - name: Upload build artefacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
-        path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+      - name: Upload build artefacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+          path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
