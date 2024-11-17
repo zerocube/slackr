@@ -20,8 +20,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/zerocube/slackr/slackr"
 )
 
 var build_webhook_url string
@@ -69,7 +67,7 @@ func (opt *App_Options) Load() App_Options {
 	flag.Parse()
 
 	// Read the config on disk
-	config := slackr.NewSlackrConfig()
+	config := NewSlackrConfig()
 
 	// Webhook precedence:
 	// 1. Command line parameter
