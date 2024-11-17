@@ -41,3 +41,15 @@ jobs:
         with:
           name: slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
           path: build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
+
+  test_artifact_download:
+    name: Test artifact download
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: build/
+          merge-multiple: true
+
+      - run: find build

@@ -48,9 +48,10 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          path: ./build/
+          path: build/
+          merge-multiple: true
 
       - name: Create Github Release
         uses: ncipollo/release-action@v1
