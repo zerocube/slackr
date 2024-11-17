@@ -32,7 +32,7 @@ jobs:
       - name: Go Build
         run: >-
           go build -v
-          -ldflags "-X 'main.version=${GITHUB_SHA:0:8}'"
+          -ldflags "-X 'main.git_version=${GITHUB_SHA:0:8}'"
           -o build/slackr_${{ matrix.go_os }}_${{ matrix.go_arch }}
 
       - name: Upload build artefacts
