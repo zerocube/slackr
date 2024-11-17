@@ -20,6 +20,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/zerocube/slackr/slackr"
 )
 
 var build_webhook_url string
@@ -66,22 +68,24 @@ func (opt *App_Options) Load() App_Options {
 		"Outputs the version, if known.")
 	flag.Parse()
 
-	// Priority 1: Webhook URL provided via command line (see above)
+	// Read the config on disk
+	config := slackr.NewSlackrConfig()
+
+	// Webhook precedence:
+	// 1. Command line parameter
+	// 2. Environment variable
+	// 2. Config file value
+	// 3. LDFLAGS
 	if opt.Webhook == "" {
-		// Priority 2: Webhook URL provided via environment variable
-		// Priority 3: Webhook URL provided via LDFLAGS
 		webhookURLFromEnv := os.Getenv("SLACKR_WEBHOOK_URL")
 		if webhookURLFromEnv != "" {
 			opt.Webhook = webhookURLFromEnv
+		} else if config.WebhookURL != "" {
+			opt.Webhook = config.WebhookURL
 		} else if build_webhook_url != "" {
 			opt.Webhook = build_webhook_url
 		}
 	}
-
-	return *opt
-}
-func (opt *App_Options) OverrideWebhook(url string) App_Options {
-	opt.Webhook = url
 	return *opt
 }
 
