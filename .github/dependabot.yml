@@ -1,0 +1,12 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    assignees: ["jkueh"]
+    schedule: { interval: weekly }
+
+  - package-ecosystem: gomod
+    directory: /
+    assignees: ["jkueh"]
+    schedule: { interval: weekly }
